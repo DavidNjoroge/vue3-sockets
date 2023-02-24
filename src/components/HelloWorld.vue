@@ -67,20 +67,35 @@ export default {
       { id: 3,name: 'Stuart', age: 19, gender: 'M', email: 'dav@mail.com', phone: '077777777', created_at: '2022', updated_at: '2022'  },
     ]);
     // Paste actual production url line 24
-    const serverUrl = 'ws://localhost:3001';
+    const serverUrl = 'ws://localhost:3000/cable';
 
     const socket = new WebSocket(serverUrl);
-    socket.addEventListener('open', (event) => {
-      // socket.send('https://nytimes.com');
-      console.log(event);
-    });
 
-    socket.addEventListener('message', function (event) {
-      console.log('Message from server ', event.data);
-      eventsFromServer.value.push({ time: new Date(), data: event.data });
-    });
+    socket.onopen = function(){
+
+      console.log('Subscribe to the channel');
+      socket.send(JSON.stringify({"command": "subscribe","identifier":"{\"channel\":\"CustomersChannel\"}"}))
+    }
+
+    socket.onmessage = function(msg) {
+      let messageData = JSON.parse(msg.data).message
+
+      if(!!messageData && typeof messageData !== "number") {
+        eventsFromServer.value.push( messageData.customer);
+      }
+    }
 
     return { eventsFromServer };
+  },
+  mounted() {
+    // this.eventsFromServer.
+    fetch('http://localhost:3000/api/customers')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('sdgfsdgdf',data.customers )
+        this.eventsFromServer = data.customers
+        console.log(data)
+      });
   }
 
 }
