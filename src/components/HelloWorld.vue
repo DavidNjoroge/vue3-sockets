@@ -5,7 +5,7 @@
       <v-card-title class="d-flex justify-space-between">
         <p>Customer list app</p>
         <v-badge
-          content="6"
+          :content="notificationCounter"
           class="pt-4">
 
           <v-icon icon="mdi-bell" size="x-large"></v-icon>
@@ -61,6 +61,7 @@ import { ref } from 'vue';
 
 export default {
   setup() {
+    const notificationCounter = ref(0)
     const eventsFromServer = ref([
       { id: 1, name: 'Michael', age: 34, gender: 'M', email: 'dav@mail.com', phone: '077777777', created_at: '2022', updated_at: '2022'  },
       { id: 2,name: 'Gideon', age: 25, gender: 'F', email: 'dav@mail.com', phone: '077777777', created_at: '2022', updated_at: '2022' },
@@ -81,11 +82,14 @@ export default {
       let messageData = JSON.parse(msg.data).message
 
       if(!!messageData && typeof messageData !== "number") {
+        console.log('message from the channel', messageData )
         eventsFromServer.value.push( messageData.customer);
+
+        notificationCounter.value = notificationCounter.value + 1
       }
     }
 
-    return { eventsFromServer };
+    return { eventsFromServer, notificationCounter };
   },
   mounted() {
     // this.eventsFromServer.
