@@ -1,79 +1,40 @@
 <template>
-  <v-container class="fill-height">
-    <v-responsive class="d-flex align-center text-center fill-height">
-      <v-img
-        contain
-        height="300"
-        src="@/assets/logo.svg"
-      />
+  <v-card>
+    <v-card-title>Customer list app</v-card-title>
+    <v-card-text>
+      <ul>
 
-      <div class="text-body-2 font-weight-light mb-n1">Welcome to</div>
-
-      <h1 class="text-h2 font-weight-bold">Vuetify</h1>
-
-      <div class="py-14" />
-
-      <v-row class="d-flex align-center justify-center">
-        <v-col cols="auto">
-          <v-btn
-            href="https://next.vuetifyjs.com/components/all/"
-            min-width="164"
-            rel="noopener noreferrer"
-            target="_blank"
-            variant="text"
-          >
-            <v-icon
-              icon="mdi-view-dashboard"
-              size="large"
-              start
-            />
-
-            Components
-          </v-btn>
-        </v-col>
-
-        <v-col cols="auto">
-          <v-btn
-            color="primary"
-            href="https://next.vuetifyjs.com/introduction/why-vuetify/#feature-guides"
-            min-width="228"
-            rel="noopener noreferrer"
-            size="x-large"
-            target="_blank"
-            variant="flat"
-          >
-            <v-icon
-              icon="mdi-speedometer"
-              size="large"
-              start
-            />
-
-            Get Started
-          </v-btn>
-        </v-col>
-
-        <v-col cols="auto">
-          <v-btn
-            href="https://community.vuetifyjs.com/"
-            min-width="164"
-            rel="noopener noreferrer"
-            target="_blank"
-            variant="text"
-          >
-            <v-icon
-              icon="mdi-account-group"
-              size="large"
-              start
-            />
-
-            Community
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-responsive>
-  </v-container>
+      </ul>
+    </v-card-text>
+  </v-card>
 </template>
+<script>
+import { ref } from 'vue';
 
-<script setup>
-  //
+export default {
+  setup() {
+    const eventsFromServer = ref([
+      { name: 'Michael', age: 34, gender: 'M' },
+      { name: 'Gideon', age: 25, gender: 'F' },
+      { name: 'Stuart', age: 19, gender: 'M' },
+    ]);
+    // Paste actual production url line 24
+    const serverUrl =
+      process.env.NODE_ENV === 'production'
+        ? 'YOUR_WEBSCOKET URL' 
+        : 'ws://localhost:3001';
+
+    const socket = new WebSocket(serverUrl);
+    socket.addEventListener('open', (event) => {
+      // socket.send('https://nytimes.com');
+      console.log(event);
+    });
+
+    socket.addEventListener('message', function (event) {
+      console.log('Message from server ', event.data);
+      eventsFromServer.value.push({ time: new Date(), data: event.data });
+    });
+  }
+
+}
 </script>
